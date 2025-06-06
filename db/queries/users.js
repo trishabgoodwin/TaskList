@@ -28,3 +28,25 @@ export async function getUser(id) {
   const { rows: user } = await db.query(sql, [id]);
   return user;
 }
+
+export async function deleteUser(id) {
+  const sql = `
+    DELETE FROM users WHERE id = $1 RETURNING *;
+  `
+
+  const {rows: user} = await db.query(sql, [id])
+  
+  return user
+}
+
+export async function updateUser({id, username, password}) {
+  const sql =`
+  UPDATE users
+  SET username = $1 , password = $2
+  WHERE id = $3
+  RETURNING * 
+  `
+
+const {rows: user} = await db.query(sql, [username, password, id])
+return user[0]
+}

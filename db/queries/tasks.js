@@ -28,3 +28,25 @@ export async function getTask(id) {
   const { rows: task } = await db.query(sql, [id]);
   return task;
 }
+
+export async function deleteTask(id) {
+  const sql = `
+    DELETE FROM tasks WHERE id = $1 RETURNING *;
+  `
+
+  const {rows: task} = await db.query(sql, [id])
+  
+  return task
+}
+
+export async function updateTask({id, title, done, user_id}) {
+  const sql =`
+  UPDATE tasks
+  SET title = $1 , done = $2, user_id = $3
+  WHERE id = $4
+  RETURNING * 
+  `
+
+const {rows: task} = await db.query(sql, [title, done, user_id, id])
+return task[0]
+}
